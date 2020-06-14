@@ -11,6 +11,8 @@ import ChargeFine from '../screens/ChargeFine';
 import OtpVerification from '../screens/OTP/components/otp/OtpVerification';
 import VerifyVehicle from '../screens/VerifyVehicle';
 import ComplaintInfoDetails from '../screens/Details/ComplaintInfoDetails';
+import History from '../screens/History';
+import ScannedLocationMap from '../screens/ScannedLocationMap';
 
 const Stack = createStackNavigator();
 
@@ -38,18 +40,9 @@ function BarcodeStack() {
       }}
       initialRouteName="StartScan"
       headerMode="none">
-      <Stack.Screen
-        name="StartScan"
-        component={StartScan}
-      />
-      <Stack.Screen
-        name="BarcodePage"
-        component={BarcodePage}
-      />
-      <Stack.Screen
-        name="ChargeFine"
-        component={ChargeFine}
-      />
+      <Stack.Screen name="StartScan" component={StartScan} />
+      <Stack.Screen name="BarcodePage" component={BarcodePage} />
+      <Stack.Screen name="ChargeFine" component={ChargeFine} />
       <Stack.Screen
         name="OtpVerification"
         component={OtpVerification}
@@ -85,5 +78,48 @@ function BarcodeStack() {
     </Stack.Navigator>
   );
 }
+function HistoryStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: {backgroundColor: 'transparent'},
+        cardOverlayEnabled: true,
+        cardStyleInterpolator: ({current: {progress}}) => ({
+          cardStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 0.5, 0.9, 1],
+              outputRange: [0, 0.25, 0.7, 1],
+            }),
+          },
+          // overlayStyle: {
+          //   opacity: progress.interpolate({
+          //     inputRange: [0, 1],
+          //     outputRange: [0, 0.5],
+          //     extrapolate: 'clamp',
+          //   }),
+          // },
+        }),
+      }}
+      initialRouteName="StartScan"
+      headerMode="none">
+      <Stack.Screen
+        name="History"
+        component={History}
+        options={{
+          // title: 'Notifications',
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="ScannedLocationMap"
+        component={ScannedLocationMap}
+        options={{
+          // title: 'Notifications',
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
-export {BarcodeStack};
+export {BarcodeStack, HistoryStack};

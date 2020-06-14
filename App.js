@@ -80,7 +80,9 @@ class App extends Component {
     return (
       <>
         <StatusBar barStyle="dark-content" backgroundColor={Colors.white} />
-       x
+        <NavigationContainer>
+          <HomeTabNavigator />
+        </NavigationContainer>
       </>
     );
   }

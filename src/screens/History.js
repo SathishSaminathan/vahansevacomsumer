@@ -10,6 +10,7 @@ import {FontType} from '../constants/AppConstants';
 import Services from '../services';
 import NoData from './NoData';
 import ImageComponent from '../components/Shared/ImageComponent';
+import Ripple from 'react-native-material-ripple';
 
 const ComplaintCardText = ({label, value, isReadMore = false}) => (
   <View style={{flexDirection: 'row', paddingVertical: 5}}>
@@ -28,7 +29,7 @@ const ComplaintCardText = ({label, value, isReadMore = false}) => (
 const CheckForStatus = (status) =>
   status === 'PENDING' ? Colors.red : Colors.green;
 
-const History = () => {
+const History = (props) => {
   const Service = new Services();
   useEffect(() => {
     Service.api(GET, 'police/complaint')
@@ -42,6 +43,22 @@ const History = () => {
   }, []);
   const [Active, setActive] = useState('Complaints');
   const [List, setList] = useState([
+    {
+      VehicleNo: 'TN 39 BT 4863',
+      Name: 'Driving without License',
+      FineAmount: '1000',
+      PayType: 'Pay Now',
+      FineStatus: 'PENDING',
+      ScannedAt: '20-06-2020 1.30PM',
+    },
+    {
+      VehicleNo: 'TN 39 BT 4863',
+      Name: 'Driving without License',
+      FineAmount: '1000',
+      PayType: 'Pay Now',
+      FineStatus: 'PENDING',
+      ScannedAt: '20-06-2020 1.30PM',
+    },
     {
       VehicleNo: 'TN 39 BT 4863',
       Name: 'Driving without License',
@@ -76,7 +93,9 @@ const History = () => {
         </View>
         <View
           style={{flex: 2, alignItems: 'flex-end', justifyContent: 'center'}}>
-          <View
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => props.navigation.navigate('ComingSoon')}
             style={{
               height: 50,
               width: 50,
@@ -91,40 +110,16 @@ const History = () => {
                   'https://pickaface.net/gallery/avatar/66961165_171026_2019_co0p.png',
               }}
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
       <TextComponent style={{margin: 10, fontSize: 20}} type={FontType.BOLD}>
-        History
+        Scanned Info
       </TextComponent>
       {List.length === 0 ? (
         <NoData text="No Complaints..." />
       ) : (
         <View style={{flex: 1, backgroundColor: Colors.white}}>
-          <View
-            style={{flexDirection: 'row', marginVertical: 20, marginTop: 5}}>
-            {['Complaints', 'Scanned', 'Fines'].map((data, i) => (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setActive(data)}
-                key={i}
-                style={{
-                  backgroundColor: Active === data ? Colors.red : Colors.white,
-                  padding: 10,
-                  paddingHorizontal: 20,
-                  borderRadius: 20,
-                  marginHorizontal: 5,
-                  elevation: 5,
-                }}>
-                <TextComponent
-                  style={{
-                    color: Active === data ? Colors.white : Colors.red,
-                  }}>
-                  {data}
-                </TextComponent>
-              </TouchableOpacity>
-            ))}
-          </View>
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
@@ -132,7 +127,8 @@ const History = () => {
               alignItems: 'center',
             }}>
             {List.map((data, i) => (
-              <View
+              <Ripple
+                onPress={() => props.navigation.push('ScannedLocationMap')}
                 key={i}
                 style={{
                   width: widthPerc(97),
@@ -165,12 +161,7 @@ const History = () => {
                   value={data.FineStatus}
                 />
                 <ComplaintCardText label="Scanned at" value={data.ScannedAt} />
-                {/* <ReadmoreComponent
-          style={{fontSize: 17}}
-          lines={1}
-          text={data.ComplaintDetails}
-        /> */}
-              </View>
+              </Ripple>
             ))}
           </ScrollView>
         </View>

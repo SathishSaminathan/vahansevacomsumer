@@ -23,6 +23,7 @@ class Login extends Component {
   }
 
   login = () => {
+    debugger
     const {toggleLoading, setUser} = this.props;
     this.Service.api(POST, 'users/authenticate', {
       ...this.state,
