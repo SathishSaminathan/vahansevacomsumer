@@ -17,7 +17,7 @@ import {HomeTabNavigator} from './src/navigations/TabNavigators';
 import {NavigationContainer} from '@react-navigation/native';
 import PermissionPage from './src/screens/PermissionPage';
 import {setUser, toggleLoading} from './src/store/actions';
-import { getData } from './src/helpers/utils';
+import {getData} from './src/helpers/utils';
 
 class App extends Component {
   constructor(props) {
@@ -80,9 +80,7 @@ class App extends Component {
     return (
       <>
         <StatusBar barStyle="dark-content" backgroundColor={Colors.white} />
-        <NavigationContainer>
-          <HomeTabNavigator />
-        </NavigationContainer>
+       x
       </>
     );
   }
