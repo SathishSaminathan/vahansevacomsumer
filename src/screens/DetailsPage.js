@@ -80,15 +80,11 @@ const DetailsPage = (props) => {
   const [routes] = React.useState([
     {key: 'VehicleInfo', title: 'Vehicle'},
     {key: 'OwnerInfo', title: 'Owner'},
-    {key: 'ComplaintInfo', title: 'Complaint'},
   ]);
 
   const renderScene = SceneMap({
     VehicleInfo: () => <VehicleInfo VehicleInfo={VehicleInfoD} {...props} />,
     OwnerInfo: () => <OwnerInfo OwnerInfo={OwnerInfoD} {...props} />,
-    ComplaintInfo: () => (
-      <ComplaintInfo ComplaintInfo={ComplaintInfoD} {...props} />
-    ),
   });
 
   const renderLabel = ({route}) => (
@@ -118,44 +114,18 @@ const DetailsPage = (props) => {
     <View style={{flex: 1, backgroundColor: Colors.white}}>
       {Loading ? (
         <LottieAnimation />
-      ) : Details ? (
-        <>
-          <TabView
-            navigationState={{index, routes}}
-            renderTabBar={renderHeader}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={initialLayout}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              width: widthPerc(100),
-              paddingBottom: 5,
-              backgroundColor: Colors.transparent,
-            }}>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <ButtonComponent
-                style={{width: '90%', borderRadius: 8}}
-                onPress={() => props.navigation.navigate('OtpVerification')}>
-                Verify OTP
-              </ButtonComponent>
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <ButtonComponent
-                onPress={() => props.navigation.navigate('ChargeFine')}
-                style={{
-                  backgroundColor: Colors.red,
-                  width: '90%',
-                  borderRadius: 8,
-                }}>
-                Charge Fine
-              </ButtonComponent>
-            </View>
-          </View>
-        </>
       ) : (
-        <NoData hasRoute {...props} />
+        Details && (
+          <>
+            <TabView
+              navigationState={{index, routes}}
+              renderTabBar={renderHeader}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={initialLayout}
+            />
+          </>
+        )
       )}
     </View>
   );

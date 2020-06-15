@@ -4,10 +4,11 @@ import {getData} from '../helpers/utils';
 
 export default class Services {
   async api(type, url, data) {
+    let config = null;
     let user = await getData(AppVariables.USER);
     if (user && user.accessToken) {
       console.log('getData(AppVariables.USER)..', user.accessToken);
-      let config = {
+      config = {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },

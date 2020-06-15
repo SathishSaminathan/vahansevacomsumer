@@ -88,14 +88,14 @@ const History = (props) => {
             Hi, Saravanan
           </TextComponent>
           <TextComponent type={FontType.BOLD} style={{color: Colors.textWhite}}>
-            Sub Inspector - Madurai
+            TN 39 BT 4863
           </TextComponent>
         </View>
         <View
           style={{flex: 2, alignItems: 'flex-end', justifyContent: 'center'}}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => props.navigation.navigate('ComingSoon')}
+            onPress={() => props.navigation.navigate('Profile')}
             style={{
               height: 50,
               width: 50,
