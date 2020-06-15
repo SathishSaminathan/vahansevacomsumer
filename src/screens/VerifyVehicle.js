@@ -49,89 +49,60 @@ export default class VerifyVehicle extends Component {
     const {VehicleNo, resendButtonDisabledTime, OTP} = this.state;
     return (
       <View style={{flex: 1, backgroundColor: Colors.white}}>
-        <NavigationHeader
+        {/* <NavigationHeader
           title={'Verify Vehicle'}
           leftIconAction={() => this.props.navigation.goBack()}
-          leftIconType={'back'}
+          // leftIconType={'back'}
           containerStyle={GenericStyles.navigationHeaderBorder}
-        />
-        <ScrollView contentContainerStyle={{alignItems: 'center', flexGrow: 1}}>
-          <TextComponent
-            style={{fontSize: 25, alignSelf: 'center', paddingVertical: 10}}
-            type={FontType.BOLD}>
-            Enter Vehicle Number
-          </TextComponent>
+        /> */}
+        <ScrollView
+          contentContainerStyle={{
+            alignItems: 'center',
+            flexGrow: 1,
+            justifyContent: 'center',
+          }}>
+          <View style={{}}>
+            <TextComponent
+              style={{fontSize: 25, alignSelf: 'center', paddingVertical: 10}}
+              type={FontType.BOLD}>
+              Enter Vehicle Number
+            </TextComponent>
 
-          <View
-            style={{
-              width: widthPerc(80),
-              borderWidth: 3,
-              borderRadius: 10,
-              alignItems: 'center',
-            }}>
-            <TextInputMask
-              autoCapitalize="characters"
-              autoFocus
-              type={'custom'}
-              options={{
-                /**
-                 * mask: (String | required | default '')
-                 * the mask pattern
-                 * 9 - accept digit.
-                 * A - accept alpha.
-                 * S - accept alphanumeric.
-                 * * - accept all, EXCEPT white space.
-                 */
-                mask: 'AA 99 AA 9999',
-              }}
-              style={{fontSize: 30}}
-              value={VehicleNo}
-              onChangeText={(VehicleNo) => {
-                this.setState({
-                  VehicleNo,
-                });
-              }}
-            />
+            <View
+              style={{
+                width: widthPerc(80),
+                borderWidth: 3,
+                borderRadius: 10,
+                alignItems: 'center',
+              }}>
+              <TextInputMask
+                autoCapitalize="characters"
+                autoFocus
+                type={'custom'}
+                options={{
+                  mask: 'AA 99 AA 9999',
+                }}
+                style={{fontSize: 30}}
+                value={VehicleNo}
+                onChangeText={(VehicleNo) => {
+                  this.setState({
+                    VehicleNo,
+                  });
+                }}
+              />
+            </View>
           </View>
-          <View style={{height: 90}}>
-            {resendButtonDisabledTime === RESEND_OTP_TIME_LIMIT && (
-              <ButtonComponent
-                style={{width: widthPerc(80), borderRadius: 10, marginTop: 10}}
-                onPress={() => this.startResendOtpTimer()}>
-                Send OTP
-              </ButtonComponent>
-            )}
-            {resendButtonDisabledTime > 0 &&
-              resendButtonDisabledTime !== RESEND_OTP_TIME_LIMIT && (
-                <TimerText
-                  text={'Resend OTP in'}
-                  time={resendButtonDisabledTime}
-                />
-              )}
-          </View>
-
-          <OTPInputView
-            style={{width: '80%', height: 80}}
-            pinCount={4}
-            autoFocusOnLoad={false}
-            code={OTP} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-            onCodeChanged={(OTP) => {
-              this.setState({OTP});
-            }}
-            codeInputFieldStyle={styles.underlineStyleBase}
-            codeInputHighlightStyle={styles.underlineStyleHighLighted}
-            // onCodeFilled={(OTP) => {
-            //   this.setState({OTP});
-            // }}
-          />
-        </ScrollView>
-        {OTP.length === 4 && (
           <ButtonComponent
-            style={{position: 'absolute', bottom: 0, left: 0, right: 0}}
-            onPress={() => this.props.navigation.navigate('DetailsPage')}>
-            Submit OTP
+            style={{width: widthPerc(80), borderRadius: 10, marginTop: 10}}
+            onPress={() =>
+              VehicleNo &&
+              this.props.navigation.navigate('OtpVerification', {
+                VehicleNo,
+              })
+            }>
+            Get OTP
           </ButtonComponent>
-        )}
+        </ScrollView>
       </View>
     );
   }

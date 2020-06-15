@@ -16,6 +16,41 @@ import ScannedLocationMap from '../screens/ScannedLocationMap';
 
 const Stack = createStackNavigator();
 
+function LoginStack() {
+ return <Stack.Navigator
+    screenOptions={{
+      cardStyle: {backgroundColor: 'transparent'},
+      cardOverlayEnabled: true,
+      cardStyleInterpolator: ({current: {progress}}) => ({
+        cardStyle: {
+          opacity: progress.interpolate({
+            inputRange: [0, 0.5, 0.9, 1],
+            outputRange: [0, 0.25, 0.7, 1],
+          }),
+        },
+        // overlayStyle: {
+        //   opacity: progress.interpolate({
+        //     inputRange: [0, 1],
+        //     outputRange: [0, 0.5],
+        //     extrapolate: 'clamp',
+        //   }),
+        // },
+      }),
+    }}
+    initialRouteName="VerifyVehicle"
+    headerMode="none">
+    <Stack.Screen name="VerifyVehicle" component={VerifyVehicle} />
+    <Stack.Screen
+      name="OtpVerification"
+      component={OtpVerification}
+      options={{
+        // title: 'Notifications',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      }}
+    />
+  </Stack.Navigator>;
+}
+
 function BarcodeStack() {
   return (
     <Stack.Navigator
@@ -122,4 +157,4 @@ function HistoryStack() {
   );
 }
 
-export {BarcodeStack, HistoryStack};
+export {BarcodeStack, HistoryStack, LoginStack};

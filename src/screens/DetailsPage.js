@@ -18,40 +18,46 @@ import IconComponent from '../components/Shared/IconComponent';
 import NoData from './NoData';
 import ButtonComponent from '../components/Shared/ButtonComponent';
 import Services from '../services';
+import {connect} from 'react-redux';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 const DetailsPage = (props) => {
-  let barcodeValue =
-    'emGmwaqjJPtxN2Z18oBqWeRYanbSci/4UxlXDfh7aFmEcaJEMAEpuWaQEdXkN9sSC8qTRbIrNcjn9Ti+yySy1Q==';
   const [index, setIndex] = React.useState(0);
   const [Loading, setLoading] = useState(true);
   const [Details, setDetails] = useState(null);
   const [VehicleInfoD, setVehicleInfo] = useState(null);
   const [OwnerInfoD, setOwnerInfo] = useState(null);
   const [ComplaintInfoD, setComplaintInfo] = useState(null);
+  const [VehicleId, setVehicleId] = useState(null);
+  const [Attachments, setAttachments] = useState([]);
+  const [TrafficFines, setTrafficFines] = useState([]);
   const Service = new Services();
+
+  const getDetails = (VehicleNo = null) => {
+    let url = `vehicle/info?vehicleNumber=${VehicleNo}`;
+    Service.api(GET, url)
+      .then((res) => {
+        console.log('vehicle/info/complaints...', res.data);
+        setDetails(res.data);
+        setOwnerInfo(res.data.ownerInfo);
+        setVehicleInfo(res.data.vehicleInfo);
+        setVehicleId(res.data.vehicleInfo.vehicleId);
+        setComplaintInfo(res.data.policeComplaints);
+        setAttachments(res.data.attachments);
+        setTrafficFines(res.data.trafficFines);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1500);
-    Service.api(
-      GET,
-      `qrcode/scan?latitude=${11.80909}&longitude=${12.908}&qrCodeNumber=${encodeURIComponent(
-        'emGmwaqjJPtxN2Z18oBqWeRYanbSci/4UxlXDfh7aFmEcaJEMAEpuWaQEdXkN9sSC8qTRbIrNcjn9Ti+yySy1Q==',
-      )}`,
-    )
-      .then((res) => {
-        console.log('vehicle/info/complaints...', barcodeValue, res.data);
-        setDetails(res.data);
-        setOwnerInfo(res.data.ownerInfo);
-        setVehicleInfo(res.data.vehicleInfo);
-        setComplaintInfo(res.data.policeComplaints);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    let {VehicleNo} = props;
+    getDetails(VehicleNo);
   }, []);
 
   useFocusEffect(
@@ -84,7 +90,9 @@ const DetailsPage = (props) => {
 
   const renderScene = SceneMap({
     VehicleInfo: () => <VehicleInfo VehicleInfo={VehicleInfoD} {...props} />,
-    OwnerInfo: () => <OwnerInfo OwnerInfo={OwnerInfoD} {...props} />,
+    OwnerInfo: () => (
+      <OwnerInfo Attachments={Attachments} OwnerInfo={OwnerInfoD} {...props} />
+    ),
   });
 
   const renderLabel = ({route}) => (
@@ -114,21 +122,32 @@ const DetailsPage = (props) => {
     <View style={{flex: 1, backgroundColor: Colors.white}}>
       {Loading ? (
         <LottieAnimation />
+      ) : Details ? (
+        <>
+          <TabView
+            navigationState={{index, routes}}
+            renderTabBar={renderHeader}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={initialLayout}
+          />
+        </>
       ) : (
-        Details && (
-          <>
-            <TabView
-              navigationState={{index, routes}}
-              renderTabBar={renderHeader}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={initialLayout}
-            />
-          </>
-        )
+        <NoData hasRoute {...props} text="User is not Registered with VIN" />
       )}
     </View>
   );
 };
 
-export default DetailsPage;
+const mapStateToProps = ({
+  user: {
+    current_user: {VehicleNo},
+    isLoading,
+  },
+}) => {
+  return {
+    VehicleNo,
+  };
+};
+
+export default connect(mapStateToProps, null)(DetailsPage);

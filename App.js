@@ -19,6 +19,7 @@ import PermissionPage from './src/screens/PermissionPage';
 import {setUser, toggleLoading} from './src/store/actions';
 import {getData} from './src/helpers/utils';
 import {AppVariables} from './src/constants/AppConstants';
+import {LoginStack} from './src/navigations/StackNavigators';
 
 class App extends Component {
   constructor(props) {
@@ -76,13 +77,11 @@ class App extends Component {
       return <PermissionPage grantPermission={this.grantPermission} />;
     }
 
-    if (!current_user) return <Login />;
-
     return (
       <>
         <StatusBar barStyle="dark-content" backgroundColor={Colors.white} />
         <NavigationContainer>
-          <HomeTabNavigator />
+          {current_user ? <HomeTabNavigator /> : <LoginStack />}
         </NavigationContainer>
       </>
     );

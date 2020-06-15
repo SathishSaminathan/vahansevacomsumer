@@ -19,7 +19,7 @@ export default class Services {
         console.log('url...', `${API_IP}${url}`);
         return axios.get(`${API_IP}${url}`, config);
       case POST:
-        console.log('url...', `${API_IP}${url}`);
+        console.log('url...', `${API_IP}${url} body ${JSON.stringify(data)}`);
         return axios.post(`${API_IP}${url}`, data);
       default:
         break;

@@ -13,7 +13,7 @@ const OwnerInfo = (props) => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: 'Basic', title: 'Basic'},
-    {key: 'Attachments', title: 'Documents'},
+    {key: 'Attachments', title: 'Attachments'},
   ]);
 
   const renderScene = SceneMap({

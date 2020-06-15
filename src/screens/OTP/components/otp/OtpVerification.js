@@ -2,6 +2,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, View, ActivityIndicator, StatusBar} from 'react-native';
 import RNOtpVerify from 'react-native-otp-verify';
+import Toast from 'react-native-tiny-toast';
 
 import {GenericStyles} from '../../styles/GenericStyles';
 import {
@@ -18,14 +19,20 @@ import {isAndroid, logErrorWithMessage} from '../../utilities/helperFunctions';
 import TimerText from './TimerText';
 import ButtonComponent from '../../../../components/Shared/ButtonComponent';
 import {Colors} from '../../../../constants/ThemeConstants';
+import Services from '../../../../services';
+import {GET, POST, AppVariables} from '../../../../constants/AppConstants';
+import {storeData} from '../../../../helpers/utils';
+import {setUser} from '../../../../store/actions';
+import {connect} from 'react-redux';
 
-const RESEND_OTP_TIME_LIMIT = 30; // 30 secs
+const RESEND_OTP_TIME_LIMIT = 300; // 30 secs
 const AUTO_SUBMIT_OTP_TIME_LIMIT = 4; // 4 secs
 
 let resendOtpTimerInterval;
 let autoSubmitOtpTimerInterval;
 
 const OtpVerification = function (props) {
+  let {VehicleNo} = props.route.params;
   const {otpRequestData, attempts} = props;
 
   const [attemptsRemaining, setAttemptsRemaining] = useState(attempts);
@@ -51,6 +58,54 @@ const OtpVerification = function (props) {
 
   // a reference to autoSubmitOtpTimerIntervalCallback to always get updated value of autoSubmitOtpTime
   const autoSubmitOtpTimerIntervalCallbackReference = useRef();
+
+  const sendOtp = () => {
+    new Services()
+      .api(POST, `users/vehicle/authenticate`, {
+        vehicleNumber: VehicleNo,
+      })
+      .then((res) => {
+        // console.log('red...', VehicleNo, res);
+      })
+      .catch((err) => {
+        console.log('err...', err);
+      });
+  };
+
+  useEffect(() => {
+    sendOtp();
+  }, []);
+
+  const verifyOtp = () => {
+    const {setUser} = props;
+    new Services()
+      .api(
+        GET,
+        `users/verify/otp?otp=${`${otpArray[0]}${otpArray[1]}${otpArray[2]}${otpArray[3]}`}`,
+      )
+      .then((res) => {
+        Toast.showSuccess('Verified Successfully', {
+          containerStyle: {backgroundColor: Colors.green},
+        });
+        setOtpArray(['', '', '', '']);
+        setUser({accessToken: res.data.accessToken, VehicleNo});
+        storeData(AppVariables.USER, {
+          accessToken: res.data.accessToken,
+          VehicleNo,
+        });
+      })
+      .catch((err) => {
+        // Toast.show('Verified Failed', {
+        //   position: Toast.position.CENTER,
+        //   containerStyle: {backgroundColor: Colors.red},
+        //   textStyle: {},
+        //   // imgSource: require('xxx'),
+        //   imgStyle: {},
+        //   // mask: true,
+        //   maskStyle: {},
+        // });
+      });
+  };
 
   useEffect(() => {
     // autoSubmitOtpTime value will be set after otp is detected,
@@ -160,6 +215,8 @@ const OtpVerification = function (props) {
 
     // resend OTP Api call
     // todo
+
+    sendOtp();
     console.log('todo: Resend OTP');
   };
 
@@ -226,7 +283,7 @@ const OtpVerification = function (props) {
   return (
     <CustomScreenContainer>
       <NavigationHeader
-        title={'Go back'}
+        title={'Verify OTP'}
         leftIconAction={() => props.navigation.goBack()}
         leftIconType={'back'}
         containerStyle={GenericStyles.navigationHeaderBorder}
@@ -290,7 +347,12 @@ const OtpVerification = function (props) {
             style={[GenericStyles.centerAlignedText, GenericStyles.mt12]}>
             {attemptsRemaining || 0} Attempts remaining
           </CustomText> */}
-          <ButtonComponent>Submit</ButtonComponent>
+          {otpArray[0] !== '' &&
+            otpArray[1] !== '' &&
+            otpArray[2] !== '' &&
+            otpArray[3] !== '' && (
+              <ButtonComponent onPress={verifyOtp}>Submit</ButtonComponent>
+            )}
         </View>
       </ErrorBoundary>
     </CustomScreenContainer>
@@ -337,4 +399,9 @@ OtpVerification.propTypes = {
   attempts: PropTypes.number.isRequired,
 };
 
-export default OtpVerification;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (value) => dispatch(setUser(value)),
+  };
+};
+export default connect(null, mapDispatchToProps)(OtpVerification);

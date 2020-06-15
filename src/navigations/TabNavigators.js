@@ -40,20 +40,7 @@ function HomeTabNavigator() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Fine"
-        component={BarcodeStack}
-        options={{
-          tabBarIcon: ({color, focused}) => (
-            <IconComponent
-              color={color}
-              size={20}
-              type={IconType.AntDesign}
-              name="search1"
-            />
-          ),
-        }}
-      />
+
       <Tab.Screen
         name="Profile"
         component={DetailsPage}
@@ -63,7 +50,21 @@ function HomeTabNavigator() {
               color={color}
               size={20}
               type={IconType.AntDesign}
-              name="bulb1"
+              name="user"
+            />
+          ),
+        }}
+      />
+      {/* <Tab.Screen
+        name="Fine"
+        component={BarcodeStack}
+        options={{
+          tabBarIcon: ({color, focused}) => (
+            <IconComponent
+              color={color}
+              size={20}
+              type={IconType.AntDesign}
+              name="search1"
             />
           ),
         }}
@@ -81,7 +82,7 @@ function HomeTabNavigator() {
             />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

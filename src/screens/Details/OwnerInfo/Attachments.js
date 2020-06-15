@@ -13,47 +13,31 @@ import {widthPerc, heightPerc} from '../../../helpers/styleHelper';
 import Ripple from 'react-native-material-ripple';
 import TextComponent from '../../../components/Shared/TextComponent';
 import {Colors} from '../../../constants/ThemeConstants';
-import {FontType} from '../../../constants/AppConstants';
+import {FontType, GET, API_IP} from '../../../constants/AppConstants';
+import Services from '../../../services';
 
 const images = [
   {
-    // Simplest usage.
-    // url: "https://avatars2.githubusercontent.com/u/7970947?v=3&s=460",
+    name: 'License',
     url:
       'https://bloximages.chicago2.vip.townnews.com/nwitimes.com/content/tncms/assets/v3/editorial/1/4a/14a842eb-b21a-5ce6-ad64-b98970d0f579/5d0ba9ff06613.image.jpg',
-    // You can pass props to <Image />.
-    props: {
-      // headers: ...
-      //   source: require('./img.png'),
-      style: {
-        height: 100,
-        width: 100,
-      },
-    },
   },
   {
-    // Simplest usage.
-    // url: "https://avatars2.githubusercontent.com/u/7970947?v=3&s=460",
+    name: 'Pollution certificate',
     url:
       'https://i.pinimg.com/originals/bf/db/37/bfdb3796f2848739ade77e73e905068e.jpg',
-    // You can pass props to <Image />.
-    props: {
-      // headers: ...
-      //   source: require('./img.png'),
-      style: {
-        height: 100,
-        width: 100,
-      },
-    },
   },
 ];
 
-const Attachments = ({params}) => {
+const Attachments = ({Attachments = []}) => {
+  Attachments.map(
+    (data) => (data.url = `${API_IP}file/download/${data.fileId}`),
+  );
   const [ModalVisible, setModalVisible] = useState(false);
   const [Index, setIndex] = useState(0);
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}>
-      {images.map((data, i) => (
+      {Attachments.map((data, i) => (
         <View
           key={i}
           style={{
@@ -75,20 +59,32 @@ const Attachments = ({params}) => {
               backgroundColor: Colors.white,
               borderRadius: 10,
               overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: Colors.primaryThemeColor,
             }}>
             <View
               style={{
                 overflow: 'hidden',
               }}>
-              <TextComponent
-                type={FontType.BOLD}
+              <View
                 style={{
-                  alignSelf: 'center',
-                  fontSize: 18,
-                  paddingVertical: 10,
+                  // flex: 1,
+                  backgroundColor: Colors.primaryThemeColor,
+                  height: heightPerc(5),
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                License
-              </TextComponent>
+                <TextComponent
+                  type={FontType.BOLD}
+                  style={{
+                    alignSelf: 'center',
+                    fontSize: 18,
+                    paddingVertical: 10,
+                    color: Colors.white,
+                  }}>
+                  {data.name}
+                </TextComponent>
+              </View>
               <View
                 style={{
                   width: widthPerc(95),
@@ -106,7 +102,7 @@ const Attachments = ({params}) => {
         transparent={true}
         onRequestClose={() => setModalVisible(false)}>
         <ImageViewer
-          imageUrls={images}
+          imageUrls={Attachments}
           index={Index}
           onSwipeDown={() => {
             setModalVisible(false);
